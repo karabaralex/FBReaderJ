@@ -1,9 +1,7 @@
-package com.yotadevices.fbreader;
+package com.yotadevices.yotaphone2.fbreader;
 
-import org.geometerplus.android.fbreader.FBReaderApplication;
 import org.geometerplus.fbreader.book.Book;
 import org.geometerplus.fbreader.book.BookUtil;
-import org.geometerplus.zlibrary.core.application.ZLApplication;
 import org.geometerplus.zlibrary.core.image.ZLImage;
 import org.geometerplus.zlibrary.core.image.ZLLoadableImage;
 import org.geometerplus.zlibrary.core.util.MiscUtil;
@@ -17,11 +15,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 public class YotaBackScreenWidget extends ZLAndroidWidget {
@@ -116,7 +111,7 @@ public class YotaBackScreenWidget extends ZLAndroidWidget {
 	
     private static final String DEBUG_TAG = "motion";
 
-    @Override
+    /*@Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         //this.mDetector.onTouchEvent(event);
         int action = event.getActionMasked();
@@ -169,5 +164,5 @@ public class YotaBackScreenWidget extends ZLAndroidWidget {
         }
 
         return super.dispatchTouchEvent(event);
-    }
+    }*/
 }

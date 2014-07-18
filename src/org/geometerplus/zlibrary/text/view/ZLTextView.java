@@ -21,12 +21,14 @@ package org.geometerplus.zlibrary.text.view;
 
 import java.util.*;
 
+import org.geometerplus.fbreader.fbreader.BookmarkHighlighting;
 import org.geometerplus.zlibrary.core.application.ZLApplication;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 import org.geometerplus.zlibrary.core.util.RationalNumber;
 import org.geometerplus.zlibrary.core.util.ZLColor;
 import org.geometerplus.zlibrary.core.view.ZLPaintContext;
 
+import org.geometerplus.zlibrary.core.view.ZLView;
 import org.geometerplus.zlibrary.text.model.*;
 import org.geometerplus.zlibrary.text.hyphenation.*;
 import org.geometerplus.zlibrary.text.view.style.ZLTextStyleCollection;
@@ -59,6 +61,7 @@ public abstract class ZLTextView extends ZLTextViewBase {
 
 	private ZLTextRegion.Soul mySelectedRegionSoul;
 	private boolean myHighlightSelectedRegion = true;
+    private BookmarkHighlighting mCurrentPageFirstHightling = null;
 
 	private final ZLTextSelection mySelection = new ZLTextSelection(this);
 	private final Set<ZLTextHighlighting> myHighlightings =
@@ -68,7 +71,12 @@ public abstract class ZLTextView extends ZLTextViewBase {
 		super(application);
 	}
 
-	public synchronized void setModel(ZLTextModel model) {
+    @Override
+    public FooterArea getFooterArea() {
+        return null;
+    }
+
+    public synchronized void setModel(ZLTextModel model) {
 		ZLTextParagraphCursorCache.clear();
 
 		mySelection.clear();
@@ -827,6 +835,7 @@ public abstract class ZLTextView extends ZLTextViewBase {
 		if (from == to) {
 			return;
 		}
+        mCurrentPageFirstHightling = null;
 
 		final LinkedList<ZLTextHighlighting> hilites = new LinkedList<ZLTextHighlighting>();
 		if (mySelection.intersects(page)) {
@@ -835,6 +844,9 @@ public abstract class ZLTextView extends ZLTextViewBase {
 		synchronized (myHighlightings) {
 			for (ZLTextHighlighting h : myHighlightings) {
 				if (h.intersects(page)) {
+                    if (page == myCurrentPage && h instanceof BookmarkHighlighting) {
+                        mCurrentPageFirstHightling = (BookmarkHighlighting)h;
+                    }
 					hilites.add(h);
 				}
 			}
@@ -1505,7 +1517,9 @@ public abstract class ZLTextView extends ZLTextViewBase {
 	public void clearCaches() {
 		resetMetrics();
 		rebuildPaintInfo();
-		Application.getViewWidget().reset();
+        if (Application != null && Application.getViewWidget() != null) {
+            Application.getViewWidget().reset();
+        }
 		myCharWidth = -1;
 	}
 
@@ -1773,4 +1787,12 @@ public abstract class ZLTextView extends ZLTextViewBase {
 			}
 		}
 	}
+
+    public boolean hasBookmarks() {
+        return mCurrentPageFirstHightling != null;
+    }
+
+    public BookmarkHighlighting getCurrentBookmarkHighlighting() {
+        return mCurrentPageFirstHightling;
+    }
 }
